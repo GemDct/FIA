@@ -1,0 +1,5 @@
+{
+  "name": "FastInvoice AI",
+  "description": "A minimalist, AI-powered invoicing application for freelancers. Generate invoices from natural language in seconds.",
+  "requestFramePermissions": []
+}
