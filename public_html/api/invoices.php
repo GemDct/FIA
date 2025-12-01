@@ -70,7 +70,8 @@ elseif ($method == 'POST') {
 
             foreach ($data->items as $item) {
                 $itemId = uniqid('ii-');
-                $qItem = "INSERT INTO invoice_items (id, invoice_id, description, quantity, price, vat_rate) VALUES (:id, :inv_id, :desc, :qty, :price, :vat)";
+                $qItem = "INSERT INTO invoice_items (id, invoice_id, description, quantity, price, vat_rate, service_id)
+                          VALUES (:id, :inv_id, :desc, :qty, :price, :vat, :svc)";
                 $sItem = $db->prepare($qItem);
                 $sItem->bindParam(":id", $itemId);
                 $sItem->bindParam(":inv_id", $invId);
@@ -78,6 +79,8 @@ elseif ($method == 'POST') {
                 $sItem->bindParam(":qty", $item->quantity);
                 $sItem->bindParam(":price", $item->price);
                 $sItem->bindParam(":vat", $item->vatRate);
+                $svc = isset($item->serviceId) ? $item->serviceId : null;
+                $sItem->bindParam(":svc", $svc);
                 $sItem->execute();
             }
 
@@ -88,6 +91,9 @@ elseif ($method == 'POST') {
             http_response_code(500);
             echo json_encode(["error" => $e->getMessage()]);
         }
+    } else {
+        http_response_code(400);
+        echo json_encode(["message" => "Missing clientId or items"]);
     }
 }
 elseif ($method == 'PUT') {
@@ -133,7 +139,8 @@ elseif ($method == 'PUT') {
 
             foreach ($data->items as $item) {
                 $itemId = uniqid('ii-');
-                $qItem = "INSERT INTO invoice_items (id, invoice_id, description, quantity, price, vat_rate) VALUES (:id, :inv_id, :desc, :qty, :price, :vat)";
+                $qItem = "INSERT INTO invoice_items (id, invoice_id, description, quantity, price, vat_rate, service_id)
+                          VALUES (:id, :inv_id, :desc, :qty, :price, :vat, :svc)";
                 $sItem = $db->prepare($qItem);
                 $sItem->bindParam(":id", $itemId);
                 $sItem->bindParam(":inv_id", $data->id);
@@ -141,6 +148,8 @@ elseif ($method == 'PUT') {
                 $sItem->bindParam(":qty", $item->quantity);
                 $sItem->bindParam(":price", $item->price);
                 $sItem->bindParam(":vat", $item->vatRate);
+                $svc = isset($item->serviceId) ? $item->serviceId : null;
+                $sItem->bindParam(":svc", $svc);
                 $sItem->execute();
             }
 

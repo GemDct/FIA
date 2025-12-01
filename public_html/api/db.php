@@ -1,4 +1,6 @@
 <?php
+// IMPORTANT: For production, you MUST restrict this to your specific frontend domain.
+// Example: header("Access-Control-Allow-Origin: https://app.codemotard.fr");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");

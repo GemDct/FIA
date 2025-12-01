@@ -7,7 +7,7 @@ CREATE TABLE users (
     avatar_url TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Sessions table for simple token auth
 CREATE TABLE sessions (
@@ -16,7 +16,7 @@ CREATE TABLE sessions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Company Settings per user
 CREATE TABLE company_settings (
@@ -33,7 +33,7 @@ CREATE TABLE company_settings (
     payment_terms TEXT,
     primary_color VARCHAR(50) DEFAULT '#000000',
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Clients
 CREATE TABLE clients (
@@ -47,7 +47,7 @@ CREATE TABLE clients (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Services / Products
 CREATE TABLE services (
@@ -61,13 +61,13 @@ CREATE TABLE services (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Invoices and Quotes
 CREATE TABLE invoices (
     id VARCHAR(50) PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
-    client_id VARCHAR(50) NOT NULL,
+    client_id VARCHAR(50),
     type ENUM('INVOICE', 'QUOTE') NOT NULL,
     number VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE invoices (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Invoice Items
 CREATE TABLE invoice_items (
@@ -96,7 +96,7 @@ CREATE TABLE invoice_items (
     service_id VARCHAR(50),
     FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
     FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Recurring Invoices
 CREATE TABLE recurring_invoices (
@@ -114,7 +114,7 @@ CREATE TABLE recurring_invoices (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Recurring Invoice Items (Template items)
 CREATE TABLE recurring_invoice_items (
@@ -127,7 +127,7 @@ CREATE TABLE recurring_invoice_items (
     service_id VARCHAR(50),
     FOREIGN KEY (recurring_invoice_id) REFERENCES recurring_invoices(id) ON DELETE CASCADE,
     FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- User Subscription (SaaS)
 CREATE TABLE user_subscriptions (
@@ -140,7 +140,7 @@ CREATE TABLE user_subscriptions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Password Reset Tokens
 CREATE TABLE password_reset_tokens (
@@ -150,4 +150,4 @@ CREATE TABLE password_reset_tokens (
     expires_at DATETIME NOT NULL,
     used_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

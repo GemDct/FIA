@@ -76,6 +76,7 @@ export const api = {
 
   pdf: {
     generateUrl: async (invoice: Invoice, companySettings: CompanySettings) => {
+      // Fetch fresh client data to ensure PDF is accurate
       const client = await api.clients.get(invoice.clientId);
       const html = renderInvoiceToHtml({ invoice, company: companySettings, client: client || INITIAL_CLIENTS[0] });
       const blob = new Blob([html], { type: 'text/html' });
@@ -173,7 +174,6 @@ export const api = {
       return fetchJson('/recurring.php', { method: 'PUT', body: JSON.stringify(rec) });
     },
     toggleActive: async (id: string) => {
-      // Fetch, Toggle, Update
       const invoices = await api.recurringInvoices.list();
       const rec = invoices.find((r: RecurringInvoice) => r.id === id);
       if (!rec) throw new Error("Recurring invoice not found");
