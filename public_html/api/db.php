@@ -30,22 +30,44 @@ class Database {
 
     public function getConnection() {
         $this->conn = null;
+
         try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-            $this->conn->exec("set names utf8mb4");
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8mb4";
+
+            $this->conn = new PDO(
+                $dsn,
+                $this->username,
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
+            );
+
         } catch(PDOException $exception) {
-            echo json_encode(["error" => "Connection error"]);
+
+            // DEBUG MODE — TEMPORARY
+            http_response_code(500);
+            echo json_encode([
+                "error" => "Connection error",
+                "details" => $exception->getMessage(),   // ← IMPORTANT for diagnosis
+                "host" => $this->host,
+                "dbname" => $this->db_name,
+                "username" => $this->username
+            ]);
             exit;
         }
+
         return $this->conn;
     }
 }
+
 
 // Helper to authenticate request
 function authenticate($db) {
     $headers = getallheaders();
     $token = null;
+
     if (isset($headers['Authorization'])) {
         $token = str_replace('Bearer ', '', $headers['Authorization']);
     }
@@ -61,5 +83,6 @@ function authenticate($db) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['user_id'];
     }
+
     return null;
 }
